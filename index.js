@@ -2,11 +2,11 @@
 'use strict'
 const util = require('util')
 const fs = require('fs')
-const config = require('config')
 const debug = require('debug')('npm-readme-viewer')
-const npm = require('npm-get-prefix')
+const globalPrefix = require('global-prefix')
 const marked = require('marked')
 const TerminalRenderer = require('marked-terminal')
+
 
 const stat = util.promisify(fs.stat)
 
@@ -16,7 +16,7 @@ marked.setOptions({
 
 const pArgv = process.argv
 const packageName = pArgv.length <= 2 ? process.cwd().split('/').pop() : pArgv[2]
-const mdFileName = config.get('mdFileName')
+ const mdFileName = 'README.md'
 
 debug(packageName)
 debug(process.cwd())
@@ -34,12 +34,10 @@ const readFile = async (fullPath) => {
 }
 
 const exec = async () => {
-  try {
-      const globalPrefix = await npm.getPrefix()
-      const paths = [`${process.cwd()}/${mdFileName}`]
-                .concat([`${process.cwd()}/node_modules/${packageName}/${mdFileName}`])
+    try {
+      const paths = pArgv <= 2 ? [`${process.cwd()}/${mdFileName}`] :
+                [`${process.cwd()}/node_modules/${packageName}/${mdFileName}`]
                 .concat([`${globalPrefix}/node_modules/${packageName}/${mdFileName}`])
-
 
       debug(paths)
       let res = await Promise.all(paths.map(path => readFile(path)))
