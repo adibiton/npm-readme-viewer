@@ -17,7 +17,7 @@
 ```
 
 
-#### How is it working
+#### Search algorithm
 The package search for the package in the following order:
 * node_modules/
 * (global) node_modules/
