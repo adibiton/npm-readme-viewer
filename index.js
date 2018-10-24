@@ -16,9 +16,9 @@ marked.setOptions({
 
 const pArgv = process.argv
 const packageName = pArgv.length <= 2 ? process.cwd().split('/').pop() : pArgv[2]
- const mdFileName = 'README.md'
+const mdFileName = 'README.md'
 
-debug(packageName)
+debug('package name: ', packageName)
 debug(process.cwd())
 const readFile = async (fullPath) => {
   try {
@@ -35,11 +35,12 @@ const readFile = async (fullPath) => {
 
 const exec = async () => {
     try {
-      const paths = pArgv <= 2 ? [`${process.cwd()}/${mdFileName}`] :
+      debug('pArgv: ', pArgv)
+      const paths = pArgv.length <= 2 ? [`${process.cwd()}/${mdFileName}`] :
                 [`${process.cwd()}/node_modules/${packageName}/${mdFileName}`]
                 .concat([`${globalPrefix}/node_modules/${packageName}/${mdFileName}`])
 
-      debug(paths)
+      debug('paths: ', paths)
       let res = await Promise.all(paths.map(path => readFile(path)))
       if (res.every(res => !res)) {
         console.log(`Could not find readme file`)
